@@ -99,7 +99,7 @@ const mostrarDetalleProducto = (nombre, precio) => {
     modalBody.innerHTML += `
       <div class="row">
         <div class="col-md-8">
-          <p>Nombre: ${producto.nombre} | Cantidad: ${producto.cantidad} | Precio: $${(producto.precio * producto.cantidad).toFixed(2)}</p>
+          <p>Nombre: ${producto.nombre} | Cantidad: ${producto.cantidad > 1 ? `x${producto.cantidad}` : 'x1'} | Precio: $${(producto.precio * producto.cantidad).toFixed(2)}</p>
         </div>
         <div class="col-md-4">
           <button class="btn btn-danger btn-sm" onclick="eliminarProducto('${producto.nombre}')">Eliminar</button>
@@ -126,7 +126,7 @@ const eliminarProducto = (nombre) => {
       modalBody.innerHTML += `
         <div class="row">
           <div class="col-md-8">
-            <p>Nombre: ${producto.nombre} | Cantidad: ${producto.cantidad} | Precio: $${(producto.precio * producto.cantidad).toFixed(2)}</p>
+            <p>Nombre: ${producto.nombre} | Cantidad: ${producto.cantidad > 1 ? `x${producto.cantidad}` : 'x1'} | Precio: $${(producto.precio * producto.cantidad).toFixed(2)}</p>
           </div>
           <div class="col-md-4">
             <button class="btn btn-danger btn-sm" onclick="eliminarProducto('${producto.nombre}')">Eliminar</button>
@@ -173,6 +173,7 @@ document.getElementById("cerrarModalBtn").addEventListener("click", function() {
 
 // Llama a la función mostrarProductos al cargar la página
 mostrarProductos();
+
 
 
 
