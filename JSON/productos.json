@@ -1,0 +1,26 @@
+[
+    {
+      "nombre": "Creatina",
+      "precio": 10000.00,
+      "descripcion": "Sabor Neutro- 300g",
+      "imagen": "../images/ena.webp"
+    },
+    {
+      "nombre": "Proteína",
+      "precio": 15000.00,
+      "descripcion": "907g-Incluye Scoop.",
+      "imagen": "../images/proteina.jpg"
+    },
+    {
+      "nombre": "Pre-entreno",
+      "precio": 25000.00,
+      "descripcion": "Pre-workout 300g. - Sabor:watermelon",
+      "imagen": "../images/preentreno.jpg"
+    },
+    {
+      "nombre": "Botella",
+      "precio": 8000.00,
+      "descripcion": "Botella reutilizable - 600ML",
+      "imagen": "../images/botella.jpg"
+    }
+  ]
