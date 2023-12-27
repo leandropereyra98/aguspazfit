@@ -1,6 +1,6 @@
 const productosContainer = document.getElementById("productosContainer");
 const filtroProductosInput = document.getElementById("filtroProductos");
-let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 const guardarCarritoEnLocalStorage = () => {
   localStorage.setItem("carrito", JSON.stringify(carrito));
@@ -13,7 +13,7 @@ const limpiarContenidoModal = () => {
 
 const cargarProductos = async () => {
   try {
-    const response = await fetch('../JSON/productos.json');
+    const response = await fetch('../JSON/productos.json'); // Ajusta la ruta según la ubicación de tu archivo
     const productos = await response.json();
     return productos;
   } catch (error) {
@@ -27,7 +27,6 @@ const mostrarProductos = async () => {
     const productos = await cargarProductos();
 
     productosContainer.innerHTML = '';
-
     productos.forEach(producto => {
       const card = document.createElement("div");
       card.classList.add("col-md-4", "mb-4");
@@ -54,17 +53,41 @@ const mostrarProductos = async () => {
 const filtrarProductos = () => {
   const filtro = filtroProductosInput.value.toLowerCase();
 
-  // Código de filtrado, similar al que ya tenías...
+  const productosFiltrados = productos.filter(producto => producto.nombre.toLowerCase().includes(filtro));
+
+  productosContainer.innerHTML = '';
+
+  productosFiltrados.forEach(producto => {
+    const card = document.createElement("div");
+    card.classList.add("col-md-4", "mb-4");
+
+    card.innerHTML = `
+      <div class="card">
+        <img src="${producto.imagen}" class="card-img-top" alt="${producto.nombre}">
+        <div class="card-body">
+          <h5 class="card-title">${producto.nombre}</h5>
+          <p class="card-text">${producto.descripcion}</p>
+          <p class="card-text">Precio: $${producto.precio.toFixed(2)}</p>
+          <button class="btn btn-secondary" onclick="mostrarDetalleProducto('${producto.nombre}', ${producto.precio})">Agregar al carrito</button>
+        </div>
+      </div>
+    `;
+
+    productosContainer.appendChild(card);
+  });
 };
 
 const mostrarDetalleProducto = (nombre, precio) => {
   const modalBody = document.getElementById("modalBody");
 
+  // Buscar si el producto ya está en el carrito
   const productoEnCarrito = carrito.find(producto => producto.nombre === nombre);
 
   if (productoEnCarrito) {
+    // Incrementar la cantidad si el producto ya está en el carrito
     productoEnCarrito.cantidad = (productoEnCarrito.cantidad || 1) + 1;
   } else {
+    // Agregar el producto al carrito con cantidad 1
     carrito.push({ nombre, precio, cantidad: 1 });
   }
 
@@ -90,6 +113,7 @@ const mostrarDetalleProducto = (nombre, precio) => {
 };
 
 const eliminarProducto = (nombre) => {
+  // Eliminar el producto del carrito
   const indice = carrito.findIndex(producto => producto.nombre === nombre);
   if (indice !== -1) {
     carrito.splice(indice, 1);
@@ -121,33 +145,36 @@ const eliminarProducto = (nombre) => {
 };
 
 const finalizarCompra = () => {
+  // Calcular la suma de los precios en el carrito
   const totalCompra = carrito.reduce((total, producto) => total + producto.precio * (producto.cantidad || 1), 0);
 
+  // Mostrar SweetAlert para confirmar la compra
   Swal.fire({
-    title: 'Compra exitosa',
-    html: `<p>Total de la compra: $${totalCompra.toFixed(2)}</p>`,
+    title: '¡Compra realizada!',
+    text: `Total de la compra: $${totalCompra.toFixed(2)}`,
     icon: 'success',
-    timer: 2000,
-    timerProgressBar: true,
-    onClose: () => {
+    confirmButtonText: 'OK'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Limpiar el carrito y cerrar el modal después de hacer clic en OK
       carrito.length = 0;
       guardarCarritoEnLocalStorage();
-      limpiarContenidoModal();
-
       $('#detalleProductoModal').modal('hide');
+      limpiarContenidoModal();
     }
   });
 };
-
-document.addEventListener('DOMContentLoaded', () => {
-  mostrarProductos();
-});
 
 filtroProductosInput.addEventListener('input', filtrarProductos);
 
 document.getElementById("cerrarModalBtn").addEventListener("click", function() {
   $('#detalleProductoModal').modal('hide');
 });
+
+// Llama a la función mostrarProductos al cargar la página
+mostrarProductos();
+
+
 
 
 
